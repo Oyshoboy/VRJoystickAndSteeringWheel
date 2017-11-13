@@ -1,3 +1,27 @@
+VRJoystickAndSteering/Assets/SteamVR/
+VRJoystickAndSteering/Assets/Assets/
+VRJoystickAndSteering/Assets/NewtonVR/
+VRJoystickAndSteering/Assets/VRTK/
+Temp/
+Obj/
+UnityGenerated/
+Library/
+Assets/AssetStoreTools*
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
