@@ -1,4 +1,4 @@
-# VRJoystickAndSteeringWheel
+# VR Joystick And Steering Wheel Mechanics
 SteamVR Joystick And Steering Wheel.<br>
 Will be really pleased for any contributions, cuz this is neccessary stuff 😘!
 👉 <b>To use it, you need to install a <a href="https://www.assetstore.unity3d.com/en/#!/content/32647" target="blank_">SteamVR Plugin</a>.</b>
