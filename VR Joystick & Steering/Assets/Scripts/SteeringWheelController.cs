@@ -8,12 +8,13 @@ public class SteeringWheelController : MonoBehaviour
     [Header("Hand to track")]
     public GameObject Hand;
     public bool HandSticked = false;
+    SteamVR_Controller.Device TrackedController = null;
 
     private float angleStickyOffset; // ofset between wheel rotation and hand position on grab
     private float wheelLastSpeed; // wheel speed at moment of ungrab, then reduces graduelly due to INERTIA
     private float INERTIA = 0.95f; // 1-wheel never stops // 0 - wheel stops instantly
     private float MAX_ROTATION = 360*3; //maximal degree rotation of the wheel
-
+    private float WHEEL_HAPTIC_FREQUENCY = 360/12; //every wheel whill click 12 times per wheel rotation
 
     [Header("Steering Wheel Base")]
     public GameObject WheelBase;
@@ -39,7 +40,7 @@ public class SteeringWheelController : MonoBehaviour
         wheelLastSpeed = 0;
     }
 
-    public void OnStick()
+    public void OnStick(SteamVR_TrackedController TrackedController)
     {
 
         if (HandSticked != true)
@@ -47,6 +48,8 @@ public class SteeringWheelController : MonoBehaviour
             CalculateOffset();
         }
         HandSticked = true;
+        this.TrackedController = SteamVR_Controller.Input(checked((int)TrackedController.controllerIndex));
+        
 
     }
 
@@ -61,6 +64,7 @@ public class SteeringWheelController : MonoBehaviour
     {
         HandSticked = false;
         wheelLastSpeed = outputAngle - lastValues[3];
+        TrackedController = null;
     }
 
     float CalculateRawAngle()
@@ -91,6 +95,16 @@ public class SteeringWheelController : MonoBehaviour
         textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg. speed "+ wheelLastSpeed;
 
         transform.localEulerAngles = new Vector3(outputAngle+90, -90, -90);// ROTATE WHEEL MODEL
+
+        float haptic_speed_coeff = Mathf.Abs(lastValues[4] - lastValues[3]) + 1;
+        if (Mathf.Abs(outputAngle % WHEEL_HAPTIC_FREQUENCY) <= haptic_speed_coeff &&
+            Mathf.Abs(lastValues[3] % WHEEL_HAPTIC_FREQUENCY) > haptic_speed_coeff)
+        {
+            if (TrackedController != null)
+            {
+                TrackedController.TriggerHapticPulse(1000);
+            }
+        }
         
     }
 
@@ -148,7 +162,13 @@ public class SteeringWheelController : MonoBehaviour
         if (Mathf.Abs(lastValues[4]) > MAX_ROTATION)
         {
             lastValues[4] = lastValues[3];
+            if (TrackedController!=null)
+            {
+                TrackedController.TriggerHapticPulse(500);
+                
+            }
         }
+        
 
         return lastValues[4]; // COLLIBRATE TO ZERO WHEN STILL AND RETURN CALCULATED VALUE
     }
