@@ -8,9 +8,10 @@ public class SteeringWheelController : MonoBehaviour
     [Header("Hand to track")]
     public GameObject Hand;
     public bool HandSticked = false;
-    public float wheelLastDegree;
 
     private float angleStickyOffset;
+    private float wheelLastSpeed;
+    private float INERTIA = 0.95f;
 
     [Header("Steering Wheel Base")]
     public GameObject WheelBase;
@@ -19,7 +20,7 @@ public class SteeringWheelController : MonoBehaviour
     public Vector3 RelativePos;
 
     [Header("Output steering wheel angle")]
-    public float outputAngle;
+    public float outputAngle=0;
     public TextMesh textDisplay;
 
     [Header("Arrays Values (Debug)")]
@@ -33,7 +34,7 @@ public class SteeringWheelController : MonoBehaviour
         CreateArrays(5); // CALLING FUNCTION WHICH CREATES ARRAYS
         angleStickyOffset = 0f;
         HandSticked = false;
-        wheelLastDegree = CalculateRawAngle();
+        wheelLastSpeed = 0;
     }
 
     public void OnStick()
@@ -47,17 +48,17 @@ public class SteeringWheelController : MonoBehaviour
 
     }
 
+
     void CalculateOffset()
     {
         float rawAngle = CalculateRawAngle();
-        angleStickyOffset = wheelLastDegree - rawAngle;
+        angleStickyOffset = outputAngle - rawAngle;
     }
 
     public void OnUnStick()
     {
         HandSticked = false;
-        wheelLastDegree = outputAngle;
-        textDisplay.text = Mathf.Round(wheelLastDegree) + "" + ".00 deg. LAST";
+        wheelLastSpeed = outputAngle - lastValues[3];
     }
 
     float CalculateRawAngle()
@@ -69,18 +70,24 @@ public class SteeringWheelController : MonoBehaviour
 
     void FixedUpdate()
     {
+        float angle;
         if (HandSticked)
         {
-            float angle = CalculateRawAngle() + angleStickyOffset;
-
-            lastValues.RemoveAt(0); // REMOVING FIRST ITEM FROM ARRAY
-            lastValues.Add(angle); // ADD LAST ITEM TO ARRAY
-
-            outputAngle = hookedAngles(angle);// SETTING OUTPUT THROUGH FUNCTION
-            textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg." + Time.time + " offset "+ angleStickyOffset;
-
-            transform.localEulerAngles = new Vector3(outputAngle, -90, -90);// ROTATE WHEEL MODEL
+            angle = CalculateRawAngle() + angleStickyOffset;
         }
+        else
+        {
+            angle = outputAngle + wheelLastSpeed;
+            wheelLastSpeed *= INERTIA;
+        }
+        lastValues.RemoveAt(0); // REMOVING FIRST ITEM FROM ARRAY
+        lastValues.Add(angle); // ADD LAST ITEM TO ARRAY
+
+        outputAngle = hookedAngles(angle);// SETTING OUTPUT THROUGH FUNCTION
+        textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg. speed "+ wheelLastSpeed;
+
+        transform.localEulerAngles = new Vector3(outputAngle+90, -90, -90);// ROTATE WHEEL MODEL
+        
     }
 
 
