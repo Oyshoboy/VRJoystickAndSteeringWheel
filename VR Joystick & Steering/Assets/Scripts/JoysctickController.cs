@@ -3,60 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class JoysctickController : MonoBehaviour {
+    [Header("Steering Wheel")]
+    public GameObject empyHandObject;
+    public GameObject SteeringWheel;
+    public SteeringWheelController WheelController;
+    bool SteeringWheelStick;
+    float angleWhenSticked = 0;
 
+
+    [Header("Steam Controllers Inputs")]
+    public SteamVR_TrackedController VRJoystickTracker;
+
+    [Header("Control Lever")]
     public GameObject Lever;
-    float RotateWhenPicked;
-
-    public GameObject RealHand;
-    public GameObject HandOnControl;
-    public GameObject HandOnAccel;
-
     public GameObject ControlLeverTop; // LEVERS TOP POINT
     public Animator ControlleverAnimator; // ANIMATOR
-
     public Vector3 ControlleverTopRelative;// RELATIVE POINT
     bool ConrolStickLever = false;
-
     float ControlLeverLastX;
     float ControlLeverLastY; // LAST POSITION FOR LERPING
-
     float ControlleverPosY;
     float ControlleverPosX; // CURRENT POS
 
 
-    public SteamVR_TrackedController VRJoystickTracker;
 
-
+    [Header("Accelerator Lever")]
     public GameObject AcceleratelLeverTop;
     public Animator AcceleratorLeverAnimator;
-
     public Vector3 AcceleratorleverTopRelative;
     bool AcceleratelStickLever = false;
-
     float AccelerateLeverLastX;
     float AccelerateLeverLastY; // LAST POSITION FOR LERPING
-
     float AccelerateleverPosY;
     float AccelerateleverPosX; // CURRENT POS
 
 
+
+    [Header("Hands To enable/disable")]
+    public GameObject RealHand;
+    public GameObject HandOnControl;
+    public GameObject HandOnAccel;
+    public GameObject HandOnSteering;
+
+
+    float RotateWhenPicked;
+
+
     // Use this for initialization
     void Start () {
-		
-	}
-	
-    public float getLeverRotate(float LeverAngle)
-    {
-        if(LeverAngle > 180)
-        {
-           LeverAngle-= 360;
-        }
-        return LeverAngle;
+        WheelController = SteeringWheel.GetComponent<SteeringWheelController>();
     }
 
     void OnTriggerStay(Collider other)
     {
-     if (other.name == "LeverControl" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever) // STICK CONTROL LEVER
+        if (other.name== "SteeringWheelCollider" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick)
+        {
+            SteeringWheelStick = true;
+        }
+
+     if (other.name == "LeverControl" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK CONTROL LEVER
         {
             ControlLeverTop.transform.position = transform.position;
             RotateWhenPicked = transform.parent.localEulerAngles.y;
@@ -64,7 +69,7 @@ public class JoysctickController : MonoBehaviour {
 
         }
 
-        if (other.name == "LeverAccelerate" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever) // STICK ACCELERATE LEVER
+        if (other.name == "LeverAccelerate" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK ACCELERATE LEVER
         {
             AcceleratelLeverTop.transform.position = transform.position;
             AcceleratelStickLever = true;
@@ -72,13 +77,54 @@ public class JoysctickController : MonoBehaviour {
         }
     }
 
+    void unstickEveryThing()
+    {
+        if (ConrolStickLever)
+        {
+            ConrolStickLever = false; // CONTROL LEVER UNSTICK
+            RealHand.SetActive(true);
+            HandOnControl.SetActive(false);
+            Lever.transform.localEulerAngles = new Vector3(0, 0, 0);
+
+        }
+
+        if (AcceleratelStickLever)
+        {
+            AcceleratelStickLever = false; // ACCELERATE LEVER UNSTICK
+            RealHand.SetActive(true);
+            HandOnAccel.SetActive(false);
+        }
+
+        if (SteeringWheelStick)
+        {
+            SteeringWheelStick = false; // STEERING WHEEL UNSTICK
+            empyHandObject.transform.position = transform.position;
+            WheelController.Hand = empyHandObject;
+            RealHand.SetActive(true);
+            HandOnSteering.SetActive(false);
+        }
+    }
+
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         //Debug.Log(getLeverRotate(Lever.transform.localEulerAngles.y));
+
+        if (SteeringWheelStick) // STEERING WHEEL CONTROLLER
+        {
+            SteeringWheel.transform.localEulerAngles = new Vector3(WheelController.angle, -90, -90);
+            WheelController.Hand = GameObject.Find(transform.parent.name);
+            RealHand.SetActive(false);
+            HandOnSteering.SetActive(true);
+        }
+
+        if (!VRJoystickTracker.triggerPressed) // UNSTICK EVERYTHING
+        {
+            unstickEveryThing();
+        }
 
         if (ConrolStickLever) // CONTROL LEVER CONTROLLER 
         {
-            Debug.Log(transform.parent.name +" rotating:"+ Lever.transform.localEulerAngles.y + " self Rotating" + transform.parent.localEulerAngles.y);
+        //    Debug.Log(transform.parent.name +" rotating:"+ Lever.transform.localEulerAngles.y + " self Rotating" + transform.parent.localEulerAngles.y);
 
             RealHand.SetActive(false);
             HandOnControl.SetActive(true);
@@ -88,14 +134,6 @@ public class JoysctickController : MonoBehaviour {
             ControlleverTopRelative = ControlLeverTop.transform.InverseTransformPoint(transform.position);
             ControlleverAnimator.SetFloat("Blend Z", ControlleverTopRelative.z / 2);
             ControlleverAnimator.SetFloat("Blend X", ControlleverTopRelative.x / 2);
-
-            if (!VRJoystickTracker.triggerPressed)
-            {
-                ConrolStickLever = false;
-                RealHand.SetActive(true);
-                HandOnControl.SetActive(false);
-                Lever.transform.localEulerAngles = new Vector3(0, 0, 0);
-            }
         }
 
         if (!ConrolStickLever)
@@ -121,12 +159,6 @@ public class JoysctickController : MonoBehaviour {
             AcceleratorleverTopRelative = AcceleratelLeverTop.transform.InverseTransformPoint(transform.position);
             AcceleratorLeverAnimator.SetFloat("Blend X", -(AcceleratorleverTopRelative.z / 40));
 
-            if (!VRJoystickTracker.triggerPressed)
-            {
-                AcceleratelStickLever = false;
-                RealHand.SetActive(true);
-                HandOnAccel.SetActive(false);
-            }
         }
 
         if (!AcceleratelStickLever)
