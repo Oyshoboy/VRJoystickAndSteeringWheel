@@ -8,7 +8,6 @@ public class JoysctickController : MonoBehaviour {
     public GameObject SteeringWheel;
     public SteeringWheelController WheelController;
     bool SteeringWheelStick;
-    float angleWhenSticked = 0;
 
 
     [Header("Steam Controllers Inputs")]
@@ -97,6 +96,7 @@ public class JoysctickController : MonoBehaviour {
 
         if (SteeringWheelStick)
         {
+            WheelController.HandSticked = false;
             SteeringWheelStick = false; // STEERING WHEEL UNSTICK
             empyHandObject.transform.position = transform.position;
             WheelController.Hand = empyHandObject;
@@ -111,7 +111,7 @@ public class JoysctickController : MonoBehaviour {
 
         if (SteeringWheelStick) // STEERING WHEEL CONTROLLER
         {
-            SteeringWheel.transform.localEulerAngles = new Vector3(WheelController.angle, -90, -90);
+            WheelController.HandSticked = true;
             WheelController.Hand = GameObject.Find(transform.parent.name);
             RealHand.SetActive(false);
             HandOnSteering.SetActive(true);
@@ -124,13 +124,10 @@ public class JoysctickController : MonoBehaviour {
 
         if (ConrolStickLever) // CONTROL LEVER CONTROLLER 
         {
-        //    Debug.Log(transform.parent.name +" rotating:"+ Lever.transform.localEulerAngles.y + " self Rotating" + transform.parent.localEulerAngles.y);
-
             RealHand.SetActive(false);
             HandOnControl.SetActive(true);
 
-            Lever.transform.localEulerAngles= new Vector3(0, transform.parent.localEulerAngles.y-RotateWhenPicked, 0); 
-
+            Lever.transform.localEulerAngles = new Vector3(0, transform.parent.localEulerAngles.y - RotateWhenPicked, 0);
             ControlleverTopRelative = ControlLeverTop.transform.InverseTransformPoint(transform.position);
             ControlleverAnimator.SetFloat("Blend Z", ControlleverTopRelative.z / 2);
             ControlleverAnimator.SetFloat("Blend X", ControlleverTopRelative.x / 2);

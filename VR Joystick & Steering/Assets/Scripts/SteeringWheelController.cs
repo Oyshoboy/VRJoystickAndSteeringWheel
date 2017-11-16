@@ -7,6 +7,8 @@ public class SteeringWheelController : MonoBehaviour
 
     [Header("Hand to track")]
     public GameObject Hand;
+    public bool HandSticked = false;
+    public float wheelLastDegree;
 
     [Header("Steering Wheel Base")]
     public GameObject WheelBase;
@@ -20,18 +22,19 @@ public class SteeringWheelController : MonoBehaviour
     public TextMesh textDisplay;
 
     [Header("Arrays Values (Debug)")]
-    public List<float> lastValues = new List<float>();
-    public List<float> Diffs = new List<float>();
-    public List<float> formulaDiffs = new List<float>();
-    public List<float> increment = new List<float>();
+    public List<float> lastValues = new List<float>(); // stores last angles
+    public List<float> Diffs = new List<float>(); // stores difference between each last angles
+    public List<float> formulaDiffs = new List<float>(); // stores formulated diffs
+    public List<float> increment = new List<float>(); // calculating incrementation
 
     void Start()
     {
         CreateArrays(5); // CALLING FUNCTION WHICH CREATES ARRAYS
     }
 
-    void Update()
+    void FixedUpdate()
     {
+
         RelativePos = WheelBase.transform.InverseTransformPoint(Hand.transform.position); // GETTING RELATIVE POSITION BETWEEN STEERING WHEEL BASE AND HAND
         angle = Mathf.Atan2(RelativePos.y, RelativePos.x) * Mathf.Rad2Deg; // GETTING CIRCULAR DATA FROM X & Y RELATIVES  VECTORS
 
@@ -39,8 +42,10 @@ public class SteeringWheelController : MonoBehaviour
         lastValues.Add(angle); // ADD LAST ITEM TO ARRAY
 
         outputAngle = hookedAngles(angle);// SETTING OUTPUT THROUGH FUNCTION
-        textDisplay.text = Mathf.Round(outputAngle) + "";
-        //transform.localEulerAngles = new Vector3(angle, -90, -90); // SETTING STEERING WHEEL ROTATION
+        textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg.";
+
+        transform.localEulerAngles = new Vector3(angle, -90, -90);// ROTATE WHEEL MODEL
+
     }
 
 
