@@ -8,9 +8,12 @@ public class SteeringWheelController : MonoBehaviour
     [Header("Hand to track")]
     public GameObject Hand;
     public bool HandSticked = false;
-    public float wheelLastDegree;
 
-    private float angleStickyOffset;
+    private float angleStickyOffset; // ofset between wheel rotation and hand position on grab
+    private float wheelLastSpeed; // wheel speed at moment of ungrab, then reduces graduelly due to INERTIA
+    private float INERTIA = 0.95f; // 1-wheel never stops // 0 - wheel stops instantly
+    private float MAX_ROTATION = 360*3; //maximal degree rotation of the wheel
+
 
     [Header("Steering Wheel Base")]
     public GameObject WheelBase;
@@ -19,7 +22,7 @@ public class SteeringWheelController : MonoBehaviour
     public Vector3 RelativePos;
 
     [Header("Output steering wheel angle")]
-    public float outputAngle;
+    public float outputAngle=0;
     public TextMesh textDisplay;
 
     [Header("Arrays Values (Debug)")]
@@ -33,7 +36,7 @@ public class SteeringWheelController : MonoBehaviour
         CreateArrays(5); // CALLING FUNCTION WHICH CREATES ARRAYS
         angleStickyOffset = 0f;
         HandSticked = false;
-        wheelLastDegree = CalculateRawAngle();
+        wheelLastSpeed = 0;
     }
 
     public void OnStick()
@@ -47,17 +50,17 @@ public class SteeringWheelController : MonoBehaviour
 
     }
 
+
     void CalculateOffset()
     {
         float rawAngle = CalculateRawAngle();
-        angleStickyOffset = wheelLastDegree - rawAngle;
+        angleStickyOffset = outputAngle - rawAngle;
     }
 
     public void OnUnStick()
     {
         HandSticked = false;
-        wheelLastDegree = outputAngle;
-        textDisplay.text = Mathf.Round(wheelLastDegree) + "" + ".00 deg. LAST";
+        wheelLastSpeed = outputAngle - lastValues[3];
     }
 
     float CalculateRawAngle()
@@ -69,18 +72,26 @@ public class SteeringWheelController : MonoBehaviour
 
     void FixedUpdate()
     {
+        float angle;
         if (HandSticked)
         {
-            float angle = CalculateRawAngle() + angleStickyOffset;
-
-            lastValues.RemoveAt(0); // REMOVING FIRST ITEM FROM ARRAY
-            lastValues.Add(angle); // ADD LAST ITEM TO ARRAY
-
-            outputAngle = hookedAngles(angle);// SETTING OUTPUT THROUGH FUNCTION
-            textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg." + Time.time + " offset "+ angleStickyOffset;
-
-            transform.localEulerAngles = new Vector3(outputAngle, -90, -90);// ROTATE WHEEL MODEL
+            angle = CalculateRawAngle() + angleStickyOffset; // When hands are holding the wheel hand dictates how the wheel moves
+            // angleSticky Offset is calculated on wheel grab - makes wheel not to rotate instantly to the users hand
         }
+        else
+        {
+            // when wheel is released we apply a little of inertia
+            angle = outputAngle + wheelLastSpeed; //last wheel speed is updated when wheel is ungrabbed and then gradually returns to zero
+            wheelLastSpeed *= INERTIA;
+        }
+        lastValues.RemoveAt(0); // REMOVING FIRST ITEM FROM ARRAY
+        lastValues.Add(angle); // ADD LAST ITEM TO ARRAY
+
+        outputAngle = hookedAngles(angle);// SETTING OUTPUT THROUGH FUNCTION
+        textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg. speed "+ wheelLastSpeed;
+
+        transform.localEulerAngles = new Vector3(outputAngle+90, -90, -90);// ROTATE WHEEL MODEL
+        
     }
 
 
@@ -103,6 +114,7 @@ public class SteeringWheelController : MonoBehaviour
 
 
     public float hookedAngles(float angle) // FORMULATING AND CALCULATING FUNCTION WHICH COUNTS SPINS OF WHEEL
+        //Also applying rotation limits
     {
         float period = 360;
         for (int i = 0; i < lastValues.Count - 1; i++)
@@ -133,7 +145,12 @@ public class SteeringWheelController : MonoBehaviour
 
         lastValues[4] += increment[3];
 
-        return lastValues[4] - 0; // COLLIBRATE TO ZERO WHEN STILL AND RETURN CALCULATED VALUE
+        if (Mathf.Abs(lastValues[4]) > MAX_ROTATION)
+        {
+            lastValues[4] = lastValues[3];
+        }
+
+        return lastValues[4]; // COLLIBRATE TO ZERO WHEN STILL AND RETURN CALCULATED VALUE
     }
 
 }
