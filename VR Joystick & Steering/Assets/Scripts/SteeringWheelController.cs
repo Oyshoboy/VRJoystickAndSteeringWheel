@@ -40,12 +40,12 @@ public class SteeringWheelController : MonoBehaviour
         wheelLastSpeed = 0;
     }
 
-    public void OnStick(SteamVR_TrackedController TrackedController)
+    public void OnStick(SteamVR_TrackedController TrackedController, GameObject HandOnSteering)
     {
-
         if (HandSticked != true)
         {
             CalculateOffset();
+            HandOnSteering.transform.localEulerAngles = new Vector3(-90, 0, -(angleStickyOffset+90));
         }
         HandSticked = true;
         this.TrackedController = SteamVR_Controller.Input(checked((int)TrackedController.controllerIndex));
