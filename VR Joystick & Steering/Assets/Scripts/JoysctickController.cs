@@ -114,7 +114,7 @@ public class JoysctickController : MonoBehaviour {
             WheelController.Hand = GameObject.Find(transform.parent.name);
             RealHand.SetActive(false);
             HandOnSteering.SetActive(true);
-            WheelController.OnStick();
+            WheelController.OnStick(VRJoystickTracker);
         }
 
         if (!VRJoystickTracker.triggerPressed) // UNSTICK EVERYTHING
