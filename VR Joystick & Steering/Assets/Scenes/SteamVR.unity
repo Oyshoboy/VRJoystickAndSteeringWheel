@@ -283,7 +283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &53251664
 Transform:
   m_ObjectHideFlags: 0
@@ -294,10 +294,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1331881210}
+  m_Children: []
   m_Father: {fileID: 1777475700}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &53251665
 MonoBehaviour:
@@ -912,7 +911,7 @@ GameObject:
   m_Component:
   - component: {fileID: 134255988}
   m_Layer: 0
-  m_Name: RightSteeringHand
+  m_Name: Controller (right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1192,7 +1191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 156217025}
   m_Layer: 0
-  m_Name: LeftSteeringHand
+  m_Name: Controller (left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2199,7 +2198,7 @@ GameObject:
   - component: {fileID: 354265071}
   - component: {fileID: 354265072}
   m_Layer: 0
-  m_Name: ControlLeftHandModel
+  m_Name: Controller (left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2372,7 +2371,7 @@ GameObject:
   - component: {fileID: 375117188}
   - component: {fileID: 375117187}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Aim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3436,7 +3435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &559502523
 Transform:
   m_ObjectHideFlags: 0
@@ -3449,7 +3448,7 @@ Transform:
   m_LocalScale: {x: 0.10792, y: 0.07657, z: 0.07657}
   m_Children: []
   m_Father: {fileID: 1777475700}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &559502524
 MonoBehaviour:
@@ -3463,21 +3462,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889d362380836a846b5b1f2b16f75fd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  empyHandObject: {fileID: 1073215211}
-  SteeringWheel: {fileID: 1851965303}
-  WheelController: {fileID: 0}
   VRJoystickTracker: {fileID: 1777475701}
-  Lever: {fileID: 1110166516}
-  ControlLeverTop: {fileID: 1853066299}
-  ControlleverAnimator: {fileID: 191739441}
-  ControlleverTopRelative: {x: 0, y: 0, z: 0}
-  AcceleratelLeverTop: {fileID: 798014764}
-  AcceleratorLeverAnimator: {fileID: 705454078}
-  AcceleratorleverTopRelative: {x: 0, y: 0, z: 0}
-  RealHand: {fileID: 1331881208}
-  HandOnControl: {fileID: 354265070}
-  HandOnAccel: {fileID: 1497135594}
-  HandOnSteering: {fileID: 156217024}
+  RealHandName: 
 --- !u!54 &559502525
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3674,8 +3660,11 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 585965959}
+  - component: {fileID: 585965962}
+  - component: {fileID: 585965963}
   - component: {fileID: 585965961}
   - component: {fileID: 585965960}
+  - component: {fileID: 585965964}
   m_Layer: 0
   m_Name: Controller (right)
   m_TagString: Untagged
@@ -3694,6 +3683,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1781594639}
   - {fileID: 1760291061}
   - {fileID: 1233847909}
   m_Father: {fileID: 2011306716}
@@ -3732,6 +3722,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: -1
   origin: {fileID: 0}
+--- !u!54 &585965962
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 585965958}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &585965963
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 585965958}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.14198804, y: 0.048344612, z: 0.19981267}
+  m_Center: {x: -0.010794751, y: 0.017120361, z: 0.01612255}
+--- !u!114 &585965964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 585965958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889d362380836a846b5b1f2b16f75fd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VRJoystickTracker: {fileID: 585965960}
+  RealHandName: RightHandModel
 --- !u!1 &600360777
 GameObject:
   m_ObjectHideFlags: 0
@@ -5055,7 +5085,7 @@ GameObject:
   - component: {fileID: 798014767}
   - component: {fileID: 798014766}
   m_Layer: 0
-  m_Name: Top Center
+  m_Name: Relative Center Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6376,39 +6406,6 @@ Transform:
   m_Father: {fileID: 518675078}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!21 &964186941
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Sprites/Default
-  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - PixelSnap: 0
-    - _EnableExternalAlpha: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &968837311
 GameObject:
   m_ObjectHideFlags: 0
@@ -8078,7 +8075,7 @@ GameObject:
   - component: {fileID: 1211699337}
   - component: {fileID: 1211699338}
   m_Layer: 0
-  m_Name: ControlRightHandModel
+  m_Name: Controller (right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8330,7 +8327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1233847909
 Transform:
   m_ObjectHideFlags: 0
@@ -8343,7 +8340,7 @@ Transform:
   m_LocalScale: {x: 0.107917845, y: 0.07656849, z: 0.07656849}
   m_Children: []
   m_Father: {fileID: 585965959}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1233847910
 MonoBehaviour:
@@ -8357,21 +8354,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889d362380836a846b5b1f2b16f75fd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  empyHandObject: {fileID: 1073215211}
-  SteeringWheel: {fileID: 1851965303}
-  WheelController: {fileID: 0}
-  VRJoystickTracker: {fileID: 585965960}
-  Lever: {fileID: 1110166516}
-  ControlLeverTop: {fileID: 1853066299}
-  ControlleverAnimator: {fileID: 191739441}
-  ControlleverTopRelative: {x: 0, y: 0, z: 0}
-  AcceleratelLeverTop: {fileID: 798014764}
-  AcceleratorLeverAnimator: {fileID: 705454078}
-  AcceleratorleverTopRelative: {x: 0, y: 0, z: 0}
-  RealHand: {fileID: 1781594637}
-  HandOnControl: {fileID: 1211699336}
-  HandOnAccel: {fileID: 2072120786}
-  HandOnSteering: {fileID: 134255987}
+  VRJoystickTracker: {fileID: 0}
+  RealHandName: 
 --- !u!54 &1233847911
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9217,134 +9201,6 @@ Transform:
   m_Father: {fileID: 2039490822}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -60.052002, y: -2.6200001, z: -2.216}
---- !u!43 &1301029376
-Mesh:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  serializedVersion: 8
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 24
-    topology: 0
-    firstVertex: 0
-    vertexCount: 8
-    localAABB:
-      m_Center: {x: 0, y: 0.01, z: 0}
-      m_Extent: {x: 1.65, y: 0, z: 1.275}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexBuffer: 000004000100010004000500010005000200020005000600020006000300030006000700030007000000000007000400
-  m_Skin: []
-  m_VertexData:
-    m_CurrentChannels: 13
-    m_VertexCount: 8
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 28
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 288
-    _typelessdata: 0000c03f0ad7233c000090bf000000000000803f0000803f0000803f00000000000000000000c0bf0ad7233c000090bf000000000000803f0000803f0000803f0000803f000000000000c0bf0ad7233c0000903f000000000000803f0000803f0000803f00000000000000000000c03f0ad7233c0000903f000000000000803f0000803f0000803f0000803f000000003333d33f0ad7233c3333a3bf000000000000803f0000803f00000000000000000000803f3333d3bf0ad7233c3333a3bf000000000000803f0000803f000000000000803f0000803f3333d3bf0ad7233c3333a33f000000000000803f0000803f00000000000000000000803f3333d33f0ad7233c3333a33f000000000000803f0000803f000000000000803f0000803f
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0.01, z: 0}
-    m_Extent: {x: 1.65, y: 0, z: 1.275}
-  m_MeshUsageFlags: 0
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  m_MeshOptimized: 0
 --- !u!1 &1306039786
 GameObject:
   m_ObjectHideFlags: 0
@@ -9652,14 +9508,14 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1331881208}
-  m_LocalRotation: {x: 0.012331333, y: -0.07725718, z: -0.97436446, w: 0.21093419}
-  m_LocalPosition: {x: 0.0073999763, y: -0.018900111, z: -0.14069998}
-  m_LocalScale: {x: -1.2857311, y: -1.2857307, z: -1.28573}
+  m_LocalRotation: {x: 0.012331305, y: -0.077257186, z: -0.9743644, w: 0.21093419}
+  m_LocalPosition: {x: 0.007399977, y: -0.018900082, z: -0.14070001}
+  m_LocalScale: {x: -1.2857318, y: -1.2857314, z: -1.2857306}
   m_Children:
   - {fileID: 1248863760}
   - {fileID: 604459328}
   - {fileID: 1223311828}
-  m_Father: {fileID: 53251664}
+  m_Father: {fileID: 1777475700}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -8.358001, y: -3.2810001, z: -155.33}
 --- !u!1 &1360948422
@@ -9848,6 +9704,39 @@ Transform:
   m_Father: {fileID: 168571802}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1408038531
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1408679807
 GameObject:
   m_ObjectHideFlags: 0
@@ -10393,7 +10282,7 @@ GameObject:
   - component: {fileID: 1497135595}
   - component: {fileID: 1497135596}
   m_Layer: 0
-  m_Name: AccelerateLeftHandModel
+  m_Name: Controller (left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11705,7 +11594,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1760291061
 Transform:
   m_ObjectHideFlags: 0
@@ -11716,10 +11605,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1781594639}
+  m_Children: []
   m_Father: {fileID: 585965959}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1760291062
 MonoBehaviour:
@@ -11903,8 +11791,11 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1777475700}
+  - component: {fileID: 1777475705}
+  - component: {fileID: 1777475704}
   - component: {fileID: 1777475702}
   - component: {fileID: 1777475701}
+  - component: {fileID: 1777475703}
   m_Layer: 0
   m_Name: Controller (left)
   m_TagString: Untagged
@@ -11923,6 +11814,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1331881210}
   - {fileID: 53251664}
   - {fileID: 559502523}
   m_Father: {fileID: 2011306716}
@@ -11961,6 +11853,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: -1
   origin: {fileID: 0}
+--- !u!114 &1777475703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1777475699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889d362380836a846b5b1f2b16f75fd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VRJoystickTracker: {fileID: 1777475701}
+  RealHandName: LeftHandModel
+--- !u!65 &1777475704
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1777475699}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.14198804, y: 0.048344612, z: 0.19981267}
+  m_Center: {x: -0.010794751, y: 0.017120361, z: 0.01612255}
+--- !u!54 &1777475705
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1777475699}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1781594637
 GameObject:
   m_ObjectHideFlags: 0
@@ -12003,14 +11935,14 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1781594637}
-  m_LocalRotation: {x: -0.19224069, y: -0.97829777, z: 0.07709104, w: 0.0058269873}
-  m_LocalPosition: {x: 0.0073999763, y: -0.018900111, z: -0.14069998}
-  m_LocalScale: {x: 1.2857326, y: 1.2857327, z: 1.285733}
+  m_LocalRotation: {x: -0.19224069, y: -0.97829777, z: 0.077091046, w: 0.0058269794}
+  m_LocalPosition: {x: 0.007399977, y: -0.018900082, z: -0.14070001}
+  m_LocalScale: {x: 1.2857329, y: 1.2857327, z: 1.2857336}
   m_Children:
   - {fileID: 51418101}
   - {fileID: 131932425}
   - {fileID: 150338474}
-  m_Father: {fileID: 1760291061}
+  m_Father: {fileID: 585965959}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 8.5460005, y: -177.621, z: 22.412}
 --- !u!1 &1786446980
@@ -12488,7 +12420,7 @@ GameObject:
   - component: {fileID: 1851965307}
   - component: {fileID: 1851965309}
   m_Layer: 0
-  m_Name: SteeringWheelCollider
+  m_Name: SteeringWheelCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12602,7 +12534,7 @@ GameObject:
   - component: {fileID: 1853066302}
   - component: {fileID: 1853066301}
   m_Layer: 0
-  m_Name: Top Center
+  m_Name: Relative Center Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13518,7 +13450,7 @@ GameObject:
   - component: {fileID: 2011306718}
   - component: {fileID: 2011306717}
   m_Layer: 0
-  m_Name: '[CameraRig]'
+  m_Name: RAV3[CameraRig]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13575,7 +13507,7 @@ MeshFilter:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2011306715}
-  m_Mesh: {fileID: 1301029376}
+  m_Mesh: {fileID: 2046971956}
 --- !u!23 &2011306719
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -13591,7 +13523,7 @@ MeshRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 964186941}
+  - {fileID: 1408038531}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13849,6 +13781,134 @@ Transform:
   m_Father: {fileID: 1658867637}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!43 &2046971956
+Mesh:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  serializedVersion: 8
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 24
+    topology: 0
+    firstVertex: 0
+    vertexCount: 8
+    localAABB:
+      m_Center: {x: 0, y: 0.01, z: 0}
+      m_Extent: {x: 1.65, y: 0, z: 1.275}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexBuffer: 000004000100010004000500010005000200020005000600020006000300030006000700030007000000000007000400
+  m_Skin: []
+  m_VertexData:
+    m_CurrentChannels: 13
+    m_VertexCount: 8
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 28
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 288
+    _typelessdata: 0000c03f0ad7233c000090bf000000000000803f0000803f0000803f00000000000000000000c0bf0ad7233c000090bf000000000000803f0000803f0000803f0000803f000000000000c0bf0ad7233c0000903f000000000000803f0000803f0000803f00000000000000000000c03f0ad7233c0000903f000000000000803f0000803f0000803f0000803f000000003333d33f0ad7233c3333a3bf000000000000803f0000803f00000000000000000000803f3333d3bf0ad7233c3333a3bf000000000000803f0000803f000000000000803f0000803f3333d3bf0ad7233c3333a33f000000000000803f0000803f00000000000000000000803f3333d33f0ad7233c3333a33f000000000000803f0000803f000000000000803f0000803f
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 0, y: 0.01, z: 0}
+    m_Extent: {x: 1.65, y: 0, z: 1.275}
+  m_MeshUsageFlags: 0
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  m_MeshOptimized: 0
 --- !u!1 &2058351224
 GameObject:
   m_ObjectHideFlags: 0
@@ -14132,7 +14192,7 @@ GameObject:
   - component: {fileID: 2072120787}
   - component: {fileID: 2072120788}
   m_Layer: 0
-  m_Name: AccelerateRightHandModel
+  m_Name: Controller (right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
