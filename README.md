@@ -3,7 +3,7 @@ Raw SteamVR Joystick And Steering Wheel Mechanics.<br>
 👉 Will be really <b>pleased for any contributions</b>, cuz this is neccessary stuff 😎 !<br>
 👉 <b>To use it, you need to install a <a href="https://www.assetstore.unity3d.com/en/#!/content/32647" target="blank_">SteamVR Plugin</a>.</b>
 
-Control mechanics used in <a href"https://elysium.today" target="blank_">Project Elysium</a>.
+Control mechanics used in <a href="https://elysium.today" target="blank_">Project Elysium</a>.
 
 
 # Video Demo Showcase of Plane Controls & Steering Wheel
