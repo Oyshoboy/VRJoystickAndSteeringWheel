@@ -3,123 +3,127 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ControlsManager : MonoBehaviour {
-    //Steering Wheel vars
-    GameObject empyHandObject;
-    GameObject SteeringWheel;
+    [HideInInspector]
+    public GameObject SteeringWheel;
     SteeringWheelController WheelController;
     bool SteeringWheelStick;
 
 
     [Header("Steam Controllers Inputs (auto)")]
+    [HideInInspector]
     public SteamVR_TrackedController VRJoystickTracker;
 
     //Controle Lever vars
-    GameObject Lever;
-    GameObject ControlLeverTop; // LEVERS TOP POINT
+    [HideInInspector]
+    public GameObject Lever;
+    [HideInInspector]
+    public GameObject ControlLeverTop; // LEVERS TOP POINT
     Animator ControlleverAnimator; // ANIMATOR
     Vector3 ControlleverTopRelative;// RELATIVE POINT
     bool ConrolStickLever = false;
     float ControlLeverLastX;
-    float ControlLeverLastY; // LAST POSITION FOR LERPING
+    float ControlLeverLastZ; // LAST POSITION FOR LERPING
     float ControlleverPosY;
     float ControlleverPosX; // CURRENT POS
 
 
 
     //Accelerate Lever vars
-    GameObject AccelerateLever;
-    GameObject AcceleratelLeverTop;
+    [HideInInspector]
+    public GameObject AccelerateLever;
+    [HideInInspector]
+    public GameObject AcceleratelLeverTop;
     Animator AcceleratorLeverAnimator;
     Vector3 AcceleratorleverTopRelative;
     bool AcceleratelStickLever = false;
     float AccelerateLeverLastX;
-    float AccelerateLeverLastY; // LAST POSITION FOR LERPING
-    float AccelerateleverPosY;
+    float AccelerateLeverLastBlend; // LAST POSITION FOR LERPING
     float AccelerateleverPosX; // CURRENT POS
 
 
-
-    [Header("Hands To enable/disable")]
-    public string RealHandName;
-    GameObject RealHand;
-    GameObject HandOnControl;
-    GameObject HandOnAccel;
-    GameObject HandOnSteering;
-
-
     float RotateWhenPicked;
+    [HideInInspector]
+    [Header("Joystick Output")]
+    public JoystickOutput joystickOutput;
+
+    [HideInInspector]
+    [Header("Accelerator Output")]
+    public AcceleratorOutput acceleratorOutPut;
 
 
     // Use this for initialization
     void Start () {
-
-
-        RealHand = GameObject.Find(RealHandName);
         VRJoystickTracker = gameObject.GetComponent<SteamVR_TrackedController>();
     }
 
     void OnTriggerStay(Collider other)
     {
-        if (other.name== "SteeringWheelCore" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick)
+        if (other.name == "SteeringWheelCore" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick)
         {
             SteeringWheel = other.gameObject;
             SteeringWheelStick = true;
-            HandOnSteering = other.transform.Find(gameObject.name).gameObject;
             WheelController = SteeringWheel.GetComponent<SteeringWheelController>();
         }
-
-     if (other.name == "LeverControl" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK CONTROL LEVER
+        else if (other.name == "LeverControl" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK CONTROL LEVER
         {
-            Lever = other.transform.parent.gameObject;
-            ControlLeverTop = Lever.transform.parent.parent.transform.Find("Relative Center Point").gameObject;
-            ControlleverAnimator = Lever.transform.parent.GetComponent<Animator>();
-            ControlLeverTop.transform.position = transform.position;
-            RotateWhenPicked = transform.localEulerAngles.y;
-            ConrolStickLever = true;
-            HandOnControl = other.transform.parent.Find(gameObject.name).gameObject;
+            OnControlBegin(other);
+        }
+        else if (other.name == "LeverAccelerate" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK ACCELERATE LEVER
+        {
+            OnAcceleratorBegin(other);
+        }
+        else if (other.name == "LeverTrigger" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK ACCELERATE TRIGGER
+        { 
+            OnAcceleratorBegin(other);
         }
 
-        if (other.name == "LeverAccelerate" && VRJoystickTracker.triggerPressed && !ConrolStickLever && !AcceleratelStickLever && !SteeringWheelStick) // STICK ACCELERATE LEVER
-        {
-            AccelerateLever = other.gameObject;
-            AcceleratelLeverTop = AccelerateLever.transform.parent.parent.parent.transform.Find("Relative Center Point").gameObject;
-            AcceleratorLeverAnimator = AccelerateLever.transform.parent.parent.GetComponent<Animator>();
-            AcceleratelLeverTop.transform.position = transform.position;
-            AcceleratelStickLever = true;
-            HandOnAccel = other.transform.parent.Find(gameObject.name).gameObject;
-
-        }
     }
 
-    void unstickEveryThing()
+    void OnControlBegin(Collider other)
+    {
+        joystickOutput = other.transform.root.GetComponent<JoystickOutput>();
+        Lever = other.transform.parent.gameObject;
+        joystickOutput = other.GetComponentInParent<JoystickOutput>();
+        ControlLeverTop = Lever.transform.parent.parent.transform.Find("Relative Center Point").gameObject;
+        ControlleverAnimator = Lever.transform.parent.GetComponent<Animator>();
+        ControlLeverLastX = ControlleverAnimator.GetFloat("Blend X");
+        ControlLeverLastZ = ControlleverAnimator.GetFloat("Blend Z");
+        ControlLeverTop.transform.position = transform.position;
+        RotateWhenPicked = transform.localEulerAngles.y;
+        ConrolStickLever = true;
+    }
+
+    void OnAcceleratorBegin(Collider other)
+    {
+        acceleratorOutPut = other.transform.root.GetComponent<AcceleratorOutput>();
+        acceleratorOutPut = other.GetComponentInParent<AcceleratorOutput>();
+        AccelerateLever = other.gameObject;
+        AcceleratelLeverTop = AccelerateLever.transform.parent.parent.parent.transform.Find("Relative Center Point").gameObject;
+        AcceleratorLeverAnimator = AccelerateLever.transform.parent.parent.GetComponent<Animator>();
+        AccelerateLeverLastBlend = AcceleratorLeverAnimator.GetFloat("Blend X");
+        AcceleratelLeverTop.transform.position = transform.position;
+        AcceleratelStickLever = true;
+    }
+
+    void UnstickEveryThing()
     {
         if (ConrolStickLever)
         {
             ConrolStickLever = false; // CONTROL LEVER UNSTICK
-            RealHand.SetActive(true);
-            HandOnControl.SetActive(false);
-            Lever.transform.localEulerAngles = new Vector3(0, 0, 0);
-            HandOnControl = null;
 
+            Lever.transform.localEulerAngles = new Vector3(0, 0, 0);
         }
 
         if (AcceleratelStickLever)
         {
             AcceleratelStickLever = false; // ACCELERATE LEVER UNSTICK
-            RealHand.SetActive(true);
-            HandOnAccel.SetActive(false);
-            HandOnAccel = null;
         }
 
         if (SteeringWheelStick)
         {
             WheelController.OnUnStick();
             SteeringWheelStick = false; // STEERING WHEEL UNSTICK
-            //empyHandObject.transform.position = transform.position;
             WheelController.Hand = null;
-            RealHand.SetActive(true);
-            HandOnSteering.SetActive(false);
-            HandOnSteering = null;
             SteeringWheel = null;
             WheelController = null;
         }
@@ -127,34 +131,42 @@ public class ControlsManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-        //Debug.Log(getLeverRotate(Lever.transform.localEulerAngles.y));
 
         if (SteeringWheelStick) // STEERING WHEEL CONTROLLER
         {
             if (!WheelController.Hand)
             {
-                WheelController.Hand = GameObject.Find(gameObject.name); // CHECK IF ALREADY HAND GRABBED
+                WheelController.Hand = gameObject; // CHECK IF ALREADY HAND GRABBED
             }
-
-            RealHand.SetActive(false);
-            HandOnSteering.SetActive(true);
-            WheelController.OnStick(VRJoystickTracker, HandOnSteering);
+            WheelController.OnStick(VRJoystickTracker);
         }
 
         if (!VRJoystickTracker.triggerPressed) // UNSTICK EVERYTHING
         {
-            unstickEveryThing();
+            UnstickEveryThing();
         }
 
         if (ConrolStickLever) // CONTROL LEVER CONTROLLER 
         {
-            RealHand.SetActive(false);
-            HandOnControl.SetActive(true);
-
-            Lever.transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - RotateWhenPicked, 0);
             ControlleverTopRelative = ControlLeverTop.transform.InverseTransformPoint(transform.position);
             ControlleverAnimator.SetFloat("Blend Z", ControlleverTopRelative.z / 2);
+            if (ControlleverAnimator.GetFloat("Blend Z") < 4.5f && ControlleverAnimator.GetFloat("Blend Z") > -4.5f)
+            {
+                joystickOutput.joyPitch = ControlleverAnimator.GetFloat("Blend Z");
+            }
+
             ControlleverAnimator.SetFloat("Blend X", ControlleverTopRelative.x / 2);
+
+            if (ControlleverAnimator.GetFloat("Blend X") < 4.5f && ControlleverAnimator.GetFloat("Blend X") > -4.5f)
+            {
+                joystickOutput.joyRoll = ControlleverAnimator.GetFloat("Blend X");
+            }
+
+            if(transform.localEulerAngles.y - RotateWhenPicked <= 60 && transform.localEulerAngles.y - RotateWhenPicked >= -60)
+            {
+            joystickOutput.joyYaw = transform.localEulerAngles.y - RotateWhenPicked;
+            Lever.transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - RotateWhenPicked, 0);
+            }
         }
 
         if (!ConrolStickLever && ControlleverAnimator)
@@ -163,10 +175,15 @@ public class ControlsManager : MonoBehaviour {
             ControlLeverLastX = ControlleverAnimator.GetFloat("Blend X");
             ControlleverPosX = Mathf.Lerp(ControlLeverLastX, 0, Time.time / 150);
             ControlleverAnimator.SetFloat("Blend X", ControlleverPosX);
+            joystickOutput.joyRoll = ControlleverPosX;
 
-            ControlLeverLastY = ControlleverAnimator.GetFloat("Blend Z");
-            ControlleverPosY = Mathf.Lerp(ControlLeverLastY, 0, Time.time/150);
+
+            joystickOutput.joyYaw = 0;
+
+            ControlLeverLastZ = ControlleverAnimator.GetFloat("Blend Z");
+            ControlleverPosY = Mathf.Lerp(ControlLeverLastZ, 0, Time.time/150);
             ControlleverAnimator.SetFloat("Blend Z", ControlleverPosY);
+            joystickOutput.joyPitch = ControlleverPosY;
 
         }
 
@@ -174,24 +191,43 @@ public class ControlsManager : MonoBehaviour {
 
         if (AcceleratelStickLever) // ACCELERATE LEVER CONTROLLER 
         {
-            RealHand.SetActive(false);
-            HandOnAccel.SetActive(true);
-
             AcceleratorleverTopRelative = AcceleratelLeverTop.transform.InverseTransformPoint(transform.position);
-            AcceleratorLeverAnimator.SetFloat("Blend X", -(AcceleratorleverTopRelative.z / 40));
+            AcceleratorLeverAnimator.SetFloat("Blend X", -(AcceleratorleverTopRelative.z / 40)+ AccelerateLeverLastBlend);
+
+            if (AcceleratorLeverAnimator.GetFloat("Blend X") > 0 && AcceleratorLeverAnimator.GetFloat("Blend X") < 0.5f)
+            {
+                acceleratorOutPut.accelAxis = AcceleratorLeverAnimator.GetFloat("Blend X") * 2;
+            }
 
         }
 
         if (!AcceleratelStickLever && AcceleratorLeverAnimator)
         {
             // UNSTICK ACELERATE LEVER
-            AccelerateLeverLastX = AcceleratorLeverAnimator.GetFloat("Blend X");
-            AccelerateleverPosX = Mathf.Lerp(AccelerateLeverLastX, 0, Time.time / 150);
-            AcceleratorLeverAnimator.SetFloat("Blend X", AccelerateleverPosX);
+            NormalizeAcceleratorBlend();
+            acceleratorOutPut = null;
 
         }
 
 
+    }
+
+    void NormalizeAcceleratorBlend()
+    {
+        if (AcceleratorLeverAnimator.GetFloat("Blend X") >= 0.5f)
+        {
+            AcceleratorLeverAnimator.SetFloat("Blend X", 0.5f);
+        } else if (AcceleratorLeverAnimator.GetFloat("Blend X") <= 0)
+        {
+            AcceleratorLeverAnimator.SetFloat("Blend X", 0);
+        }
+    }
+
+    void ReturnAccelerator()
+    {
+        AccelerateLeverLastX = AcceleratorLeverAnimator.GetFloat("Blend X");
+        AccelerateleverPosX = Mathf.Lerp(AccelerateLeverLastX, 0, Time.time / 150);
+        AcceleratorLeverAnimator.SetFloat("Blend X", AccelerateleverPosX);
     }
 
 }

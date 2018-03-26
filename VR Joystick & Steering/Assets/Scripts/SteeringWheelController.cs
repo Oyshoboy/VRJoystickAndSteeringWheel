@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +12,10 @@ public class SteeringWheelController : MonoBehaviour
     private float angleStickyOffset; // ofset between wheel rotation and hand position on grab
     private float wheelLastSpeed; // wheel speed at moment of ungrab, then reduces graduelly due to INERTIA
     private float INERTIA = 0.95f; // 1-wheel never stops // 0 - wheel stops instantly
-    private float MAX_ROTATION = 360*3; //maximal degree rotation of the wheel
+    public float MAX_ROTATION = 360; //maximal degree rotation of the wheel
     private float WHEEL_HAPTIC_FREQUENCY = 360/12; //every wheel whill click 12 times per wheel rotation
 
-    [Header("Steering Wheel Base")]
+    [Header("Steering Wheel Relative Point")]
     public GameObject WheelBase;
 
     [Header("Wheel & Hand relative position")]
@@ -25,6 +24,8 @@ public class SteeringWheelController : MonoBehaviour
     [Header("Output steering wheel angle")]
     public float outputAngle=0;
     public TextMesh textDisplay;
+
+    public SteeringWheelOutPut steeringWheelOutPut;
 
     [Header("Arrays Values (Debug)")]
     public List<float> lastValues = new List<float>(); // stores last angles
@@ -40,12 +41,11 @@ public class SteeringWheelController : MonoBehaviour
         wheelLastSpeed = 0;
     }
 
-    public void OnStick(SteamVR_TrackedController TrackedController, GameObject HandOnSteering)
+    public void OnStick(SteamVR_TrackedController TrackedController)
     {
         if (HandSticked != true)
         {
             CalculateOffset();
-            HandOnSteering.transform.localEulerAngles = new Vector3(-90, 0, -(angleStickyOffset+90));
         }
         HandSticked = true;
         this.TrackedController = SteamVR_Controller.Input(checked((int)TrackedController.controllerIndex));
@@ -64,6 +64,7 @@ public class SteeringWheelController : MonoBehaviour
     {
         HandSticked = false;
         wheelLastSpeed = outputAngle - lastValues[3];
+        
         TrackedController = null;
     }
 
@@ -76,6 +77,7 @@ public class SteeringWheelController : MonoBehaviour
 
     void FixedUpdate()
     {
+        steeringWheelOutPut.outAngle = outputAngle;
         float angle;
         if (HandSticked)
         {
@@ -92,9 +94,10 @@ public class SteeringWheelController : MonoBehaviour
         lastValues.Add(angle); // ADD LAST ITEM TO ARRAY
 
         outputAngle = hookedAngles(angle);// SETTING OUTPUT THROUGH FUNCTION
-        textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg. speed "+ wheelLastSpeed;
-
-        transform.localEulerAngles = new Vector3(outputAngle+90, -90, -90);// ROTATE WHEEL MODEL
+        if (textDisplay != null){
+            textDisplay.text = Mathf.Round(outputAngle) + "" + ".00 deg. speed " + wheelLastSpeed;
+        }
+        transform.localEulerAngles = new Vector3(outputAngle+90, -90, -90);// ROTATE WHEEL MODEL FACING TO THE PLAYA
 
         float haptic_speed_coeff = Mathf.Abs(lastValues[4] - lastValues[3]) + 1;
         if (Mathf.Abs(outputAngle % WHEEL_HAPTIC_FREQUENCY) <= haptic_speed_coeff &&
